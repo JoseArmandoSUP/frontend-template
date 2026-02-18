@@ -1,3 +1,4 @@
+//Esta api es polimorfica
 const API_URL = "http://localhost:4000/api"; // Importante colocar la url de tu api
 
 export const api = {
