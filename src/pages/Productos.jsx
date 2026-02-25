@@ -11,6 +11,7 @@ const Productos = () => {
     cargarProductos();
   }, []);
 
+  // api abstracta, solo cambia el endpoint
   const cargarProductos = async () => {
     try {
       const data = await api.get('/productoss'); 
