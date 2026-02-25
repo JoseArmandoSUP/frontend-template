@@ -16,6 +16,8 @@ function App() {
       {/* El Layout envuelve todas las rutas */}
       <Routes>
         
+        <Route path='/' element={<Navigate to="/login" replace></Navigate>}></Route>
+
         {/*RUTAS PUBLICAS (Sin Layout / Sin Menú Lateral)*/}
         <Route path='/login' element={<Login/>}></Route>
         
