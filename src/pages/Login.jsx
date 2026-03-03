@@ -18,8 +18,8 @@ const Login = () => {
         
         try{
             const datos = await api.post('/auth/login', {email, password});
-            localStorage.setItem('token', datos.token); // El token se almacena en el localStorage, sirve para verificar s estamos autentuficados
-            navigate('/dashboard'); // <---- Redirecciona al dashboard
+            localStorage.setItem('token', datos.token); // El token se almacena en el localStorage, sirve para verificar s estamos autentuficados, mapa objeto clave valor que se puede convertir en json
+            navigate('/productoss'); // <---- Redirecciona a productos
         } catch (error){
             setError("Credenciales Invalidas");
         }finally{
