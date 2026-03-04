@@ -1,14 +1,8 @@
 import Sidebar from './Sidebar';
-import { useNavigate } from 'react-router-dom';
 
 const Layout = ({ children }) => {
   
-  const navigate = useNavigate();
-
-  const cerrarSesion = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  
   
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -20,7 +14,6 @@ const Layout = ({ children }) => {
       <main className="flex-1 ml-64 p-8 transition-all">
         
         <div className="max-w-7xl mx-auto">
-          <button onClick={cerrarSesion}>Salir</button>
           {children}
         </div>
       </main>
