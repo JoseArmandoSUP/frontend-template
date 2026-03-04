@@ -7,6 +7,16 @@ const Productos = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  {/* Agregar Producto */}
+  const [nombre, setNombre] = useState('');
+  const [precio, setPrecio] = useState('');
+  const [stock, setStock] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [imagenUrl, setImagenUrl] = useState('');
+  const [categoria_id, setCategoriaId] = useState('');
+  const [err, setErr] = useState(null);
+  const [cargando, setCargando] = useState(false);
+
   useEffect(() => {
     cargarProductos();
   }, []);
@@ -20,6 +30,31 @@ const Productos = () => {
       setError("No se pudo conectar con el servidor. ¿Está encendido?");
     } finally {
       setLoading(false);
+    }
+  };
+
+  {/* Agregar producto */}
+  const agregarProducto = async (e) => {
+    e.preventDefault();
+    setErr(null);
+    setCargando(true);
+
+    try {
+      await api.post('/productoss', {nombre, precio: Number(precio), stock: Number(stock), descripcion, imagenUrl, categoria_id: Number(categoria_id)});
+
+      setNombre('');
+      setPrecio('');
+      setStock('');
+      setDescripcion('');
+      setImagenUrl('');
+      setCategoriaId('');
+
+      cargarProductos();
+
+    } catch (error) {
+      setErr("Error al agregar producto");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -46,7 +81,77 @@ const Productos = () => {
         </span>
       </header>
 
-      {/* Agregar producto*/}
+      {/* Agregar producto */}
+      <form 
+        onSubmit={agregarProducto}
+        className="bg-white p-8 rounded shadow-md w-96"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">
+            Agregar Producto
+        </h2>
+
+          {error && (
+              <p className="text-red-500 text-sm mb-4">
+                  {error}
+              </p>
+          )}
+
+        <input
+            placeholder="nombre"
+            className="w-full p-2 border rounded mb-4"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            required
+        />
+
+        <input
+            placeholder="precio"
+            className="w-full p-2 border rounded mb-4"
+            value={precio}
+            onChange={(e) => setPrecio(e.target.value)}
+            required
+        />
+
+        <input
+            placeholder="stock"
+            className="w-full p-2 border rounded mb-4"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            required
+        />
+
+        <input
+            placeholder="descripcion"
+            className="w-full p-2 border rounded mb-4"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            required
+        />
+
+        <input
+            placeholder="Imagen Url"
+            className="w-full p-2 border rounded mb-4"
+            value={imagenUrl}
+            onChange={(e) => setImagenUrl(e.target.value)}
+            required
+        />
+
+        <input
+            placeholder="categoria ID"
+            className="w-full p-2 border rounded mb-4"
+            value={categoria_id}
+            onChange={(e) => setCategoriaId(e.target.value)}
+            required
+        />
+
+        <button
+            type='submit'
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            disabled={cargando}
+        >
+            {cargando ? "Agregando... " : "Agregado"}
+        </button>
+      </form>
 
       {/* Grid Responsivo: 1 col móvil, 2 tablet, 3 desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
