@@ -46,6 +46,8 @@ const Productos = () => {
         </span>
       </header>
 
+      {/* Agregar producto*/}
+
       {/* Grid Responsivo: 1 col móvil, 2 tablet, 3 desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
@@ -55,7 +57,7 @@ const Productos = () => {
             {/* Imagen del producto */}
             <div className="h-48 p-4 bg-white flex items-center justify-center border-b border-slate-50">
               <img 
-                src={prod.imagen_url || "https://via.placeholder.com/150"} 
+                src={prod.imagenUrl || "https://via.placeholder.com/150"} 
                 alt={prod.nombre} 
                 className="max-h-full object-contain"
               />
