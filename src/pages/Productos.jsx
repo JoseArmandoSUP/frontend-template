@@ -14,6 +14,7 @@ const Productos = () => {
   const [descripcion, setDescripcion] = useState('');
   const [imagenUrl, setImagenUrl] = useState('');
   const [categoria_id, setCategoriaId] = useState('');
+  const [youtube_id, setYoutubeId] = useState('');
   const [err, setErr] = useState(null);
   const [cargando, setCargando] = useState(false);
 
@@ -40,7 +41,7 @@ const Productos = () => {
     setCargando(true);
 
     try {
-      await api.post('/productoss', {nombre, precio: Number(precio), stock: Number(stock), descripcion, imagenUrl, categoria_id: Number(categoria_id)});
+      await api.post('/productoss', {nombre, precio: Number(precio), stock: Number(stock), descripcion, imagenUrl, categoria_id: Number(categoria_id), youtube_id});
 
       setNombre('');
       setPrecio('');
@@ -48,6 +49,7 @@ const Productos = () => {
       setDescripcion('');
       setImagenUrl('');
       setCategoriaId('');
+      setYoutubeId('');
 
       cargarProductos();
 
@@ -144,6 +146,14 @@ const Productos = () => {
             required
         />
 
+        <input
+          placeholder="youtube ID"
+          className="w-full p-2 border rounded mb-4"
+          value={youtube_id}
+          onChange={(e) => setYoutubeId(e.target.value)}
+          required
+        ></input>
+
         <button
             type='submit'
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
@@ -161,11 +171,17 @@ const Productos = () => {
             
             {/* Imagen del producto */}
             <div className="h-48 p-4 bg-white flex items-center justify-center border-b border-slate-50">
-              <img 
-                src={prod.imagenUrl || "https://via.placeholder.com/150"} 
-                alt={prod.nombre} 
-                className="max-h-full object-contain"
-              />
+              {prod.youtube_id ? (
+                <iframe width="100%" height="100%" src='https://www.youtube.com/embed/${prod.youtube_id}' title='YouTube video player' frameBorder="0 autoplay; clipboard-write;" allowFullScreen></iframe>
+                ) : (
+                      <img 
+                        src={prod.imagenUrl || "https://via.placeholder.com/150"} 
+                        alt={prod.nombre} 
+                        className="max-h-full object-contain"
+                      />
+                    )
+              }
+              
             </div>
 
             {/* Cuerpo de la tarjeta */}
