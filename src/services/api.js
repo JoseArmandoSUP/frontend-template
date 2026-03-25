@@ -8,8 +8,9 @@ export const api = {
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'GET',
         headers: { 
-          'Authorization': token ? `Bearer ${token}` : ''
-        },
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
       });
       if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
       return await response.json();

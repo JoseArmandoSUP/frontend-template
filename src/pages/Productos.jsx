@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { ShoppingBag, Loader, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Loader, AlertCircle} from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [mostrarForm, setMostrarForm] = useState(false);
 
   {/* Agregar Producto */}
   const [nombre, setNombre] = useState('');
@@ -15,6 +19,8 @@ const Productos = () => {
   const [imagenUrl, setImagenUrl] = useState('');
   const [categoria_id, setCategoriaId] = useState('');
   const [youtube_id, setYoutubeId] = useState('');
+  const [latitud, setLatitud] = useState('');
+  const [longuitud, setLonguitud] = useState('');
   const [err, setErr] = useState(null);
   const [cargando, setCargando] = useState(false);
 
@@ -41,7 +47,7 @@ const Productos = () => {
     setCargando(true);
 
     try {
-      await api.post('/productoss', {nombre, precio: Number(precio), stock: Number(stock), descripcion, imagenUrl, categoria_id: Number(categoria_id), youtube_id});
+      await api.post('/productoss', {nombre, precio: Number(precio), stock: Number(stock), descripcion, imagenUrl, categoria_id: Number(categoria_id), youtube_id, latitud, longuitud});
 
       setNombre('');
       setPrecio('');
@@ -50,6 +56,8 @@ const Productos = () => {
       setImagenUrl('');
       setCategoriaId('');
       setYoutubeId('');
+      setLatitud('');
+      setLonguitud('');
 
       cargarProductos();
 
@@ -83,85 +91,110 @@ const Productos = () => {
         </span>
       </header>
 
-      {/* Agregar producto */}
-      <form 
-        onSubmit={agregarProducto}
-        className="bg-white p-8 rounded shadow-md w-96"
+      <button
+        className="mb-4 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={() => setMostrarForm(!mostrarForm)}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">
-            Agregar Producto
-        </h2>
+        {mostrarForm ? "Ocultar formulario" : "Agregar producto"}
+      </button>
 
-          {error && (
-              <p className="text-red-500 text-sm mb-4">
-                  {error}
-              </p>
-          )}
+      {/* Agregar producto */}
+      {mostrarForm && (
+        
+        <form onSubmit={agregarProducto} className="bg-white p-8 rounded shadow-md w-96">
+          <h2 className="text-2xl font-bold mb-6 text-center">
+              Agregar Producto
+          </h2>
 
-        <input
-            placeholder="nombre"
+            {error && (
+                <p className="text-red-500 text-sm mb-4">
+                    {error}
+                </p>
+            )}
+
+          <input
+              placeholder="nombre"
+              className="w-full p-2 border rounded mb-4"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+          />
+
+          <input
+              placeholder="precio"
+              className="w-full p-2 border rounded mb-4"
+              value={precio}
+              onChange={(e) => setPrecio(e.target.value)}
+              required
+          />
+
+          <input
+              placeholder="stock"
+              className="w-full p-2 border rounded mb-4"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              required
+          />
+
+          <input
+              placeholder="descripcion"
+              className="w-full p-2 border rounded mb-4"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              required
+          />
+
+          <input
+              placeholder="Imagen Url"
+              className="w-full p-2 border rounded mb-4"
+              value={imagenUrl}
+              onChange={(e) => setImagenUrl(e.target.value)}
+              required
+          />
+
+          <input
+              placeholder="categoria ID"
+              className="w-full p-2 border rounded mb-4"
+              value={categoria_id}
+              onChange={(e) => setCategoriaId(e.target.value)}
+              required
+          />
+
+          <input
+            placeholder="youtube ID"
             className="w-full p-2 border rounded mb-4"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            value={youtube_id}
+            onChange={(e) => setYoutubeId(e.target.value)}
             required
-        />
+          ></input>
 
-        <input
-            placeholder="precio"
-            className="w-full p-2 border rounded mb-4"
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
+          <input
+            placeholder='latitud'
+            className='w-full p-2 border rounded mb-4'
+            value={latitud}
+            onChange={(e) => setLatitud(e.target.value)}
             required
-        />
+          ></input>
 
-        <input
-            placeholder="stock"
-            className="w-full p-2 border rounded mb-4"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
+          <input
+            placeholder='longuitud'
+            className='w-full p-2 border rounded mb-4'
+            value={longuitud}
+            onChange={(e) => setLonguitud(e.target.value)}
             required
-        />
+          ></input>
 
-        <input
-            placeholder="descripcion"
-            className="w-full p-2 border rounded mb-4"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            required
-        />
+          <button
+              type='submit'
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              disabled={cargando}
+          >
+              {cargando ? "Agregando... " : "Agregado"}
+          </button>
+        </form>
+      )}
 
-        <input
-            placeholder="Imagen Url"
-            className="w-full p-2 border rounded mb-4"
-            value={imagenUrl}
-            onChange={(e) => setImagenUrl(e.target.value)}
-            required
-        />
-
-        <input
-            placeholder="categoria ID"
-            className="w-full p-2 border rounded mb-4"
-            value={categoria_id}
-            onChange={(e) => setCategoriaId(e.target.value)}
-            required
-        />
-
-        <input
-          placeholder="youtube ID"
-          className="w-full p-2 border rounded mb-4"
-          value={youtube_id}
-          onChange={(e) => setYoutubeId(e.target.value)}
-          required
-        ></input>
-
-        <button
-            type='submit'
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-            disabled={cargando}
-        >
-            {cargando ? "Agregando... " : "Agregado"}
-        </button>
-      </form>
+      
 
       {/* Grid Responsivo: 1 col móvil, 2 tablet, 3 desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -172,15 +205,14 @@ const Productos = () => {
             {/* Imagen del producto */}
             <div className="h-48 p-4 bg-white flex items-center justify-center border-b border-slate-50">
               {prod.youtube_id ? (
-                <iframe width="100%" height="100%" src='https://www.youtube.com/embed/${prod.youtube_id}' title='YouTube video player' frameBorder="0 autoplay; clipboard-write;" allowFullScreen></iframe>
-                ) : (
-                      <img 
-                        src={prod.imagenUrl || "https://via.placeholder.com/150"} 
-                        alt={prod.nombre} 
-                        className="max-h-full object-contain"
-                      />
-                    )
-              }
+                <iframe width="100%" height="100%"
+                        src={`https://www.youtube.com/embed/${prod.youtube_id}`}
+                        title="YouTube video player" frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen></iframe>
+              ) : (
+                <img src={prod.imagenUrl || "https://via.placeholder.com/150"} alt={prod.nombre} className="max-h-full object-contain bg-white w-full" />
+              )}
               
             </div>
 
@@ -207,6 +239,27 @@ const Productos = () => {
                   Editar
                 </button>
               </div>
+            </div>
+
+            {/*Seccion del Mapa*/}
+            <div className="h-48 w-full border-t border-slate-100 z-0 relative">
+              <MapContainer
+                center={[prod.latitud || 20.5389824, prod.longuitud || -99.133209]}
+                zoom={13}
+                style={{ height: "100%", width: "100%", zIndex: 0 }}
+              >
+                {/*Este es el servidor de OpenStreetMap que nos regala los mapas gratis*/}
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap"
+                />
+                <Marker position={[prod.latitud || 20.5389824, prod.longuitud || -99.133209]}
+                >
+                  <Popup>
+                    Ubicación de <strong>{prod.nombre}</strong>
+                  </Popup>
+                </Marker>
+              </MapContainer>
             </div>
           </div>
         ))}
