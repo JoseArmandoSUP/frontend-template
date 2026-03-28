@@ -31,8 +31,9 @@ const Productos = () => {
   // api abstracta, solo cambia el endpoint
   const cargarProductos = async () => {
     try {
-      const data = await api.get('/productoss'); 
-      setProductos(data);
+      const res = await api.get('/productoss'); 
+      console.log(res);
+      setProductos(res);
     } catch (err) {
       setError("No se pudo conectar con el servidor. ¿Está encendido?");
     } finally {
@@ -221,7 +222,7 @@ const Productos = () => {
         {productos.map((prod) => (
           <div key={prod.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-100 overflow-hidden flex flex-col">
             
-            {/* Imagen del producto */}
+            {/* Imagen del producto 
             <div className="h-48 p-4 bg-white flex items-center justify-center border-b border-slate-50">
               {prod.youtube_id ? (
                 <iframe width="100%" height="100%"
@@ -233,6 +234,29 @@ const Productos = () => {
                 <img src={prod.imagenUrl || "https://via.placeholder.com/150"} alt={prod.nombre} className="max-h-full object-contain bg-white w-full" />
               )}
               
+            </div>*/}
+
+            <div className="h-48 p-2 bg-white flex flex-col gap-2 border-b">
+
+              {/* Imagen */}
+              <img
+                src={prod.imagenUrl || "https://via.placeholder.com/150"}
+                alt={prod.nombre}
+                className="h-24 object-contain w-full"
+              />
+
+              {/* Video */}
+              {prod.youtube_id && (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${prod.youtube_id}`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
+              )}
+
             </div>
 
             {/* Cuerpo de la tarjeta */}
