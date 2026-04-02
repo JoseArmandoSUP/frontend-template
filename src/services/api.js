@@ -1,6 +1,8 @@
 //Esta api es polimorfica
 const API_URL = "https://bdprueba.onrender.com/api" || "http://localhost:4000/api";  //Importante colocar la url de tu api
 
+// const API_URL = import.meta.env.VITE_API_URL
+
 export const api = {
   get: async (endpoint) => {
     const token = localStorage.getItem('token');
